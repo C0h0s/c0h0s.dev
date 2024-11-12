@@ -1,0 +1,8 @@
+{
+  "dependencies": {
+    "@huggingface/inference": "^2.8.1",
+    "@vercel/node": "^2.10.3",
+    "ai": "^3.4.33",
+    "marked": "^15.0.0"
+  }
+}
