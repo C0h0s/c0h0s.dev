@@ -1,0 +1,816 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="c0h0s Games - Play awesome browser games">
+    <meta name="keywords" content="games, browser games, c0h0s, moto x3m, solitaire, defly">
+    <title>c0h0s Games</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <meta name="apple-mobile-web-app-title" content="c0h0s" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <style>
+        :root {
+            --primary: #0a0a1a;
+            --secondary: rgba(255, 255, 255, 0.1);
+            --accent: #6c5ce7;
+            --text: #ffffff;
+            --radius: 15px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        body {
+            background: var(--primary);
+            color: var(--text);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        #particles-js {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+        }
+
+        .moon {
+            position: fixed;
+            top: -100px;
+            right: -100px;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle at 30% 30%, #fff 0%, #aaa 100%);
+            border-radius: 50%;
+            filter: blur(20px);
+            opacity: 0.1;
+            z-index: 0;
+            animation: moon-glow 8s ease-in-out infinite;
+        }
+
+        /* Tools Section */
+.tools-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+.tool-card {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    text-align: center;
+    transition: var(--transition);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.tool-card:hover {
+    transform: translateY(-5px);
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.tool-logo {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    color: var(--accent);
+}
+
+.tool-card h3 {
+    margin: 0.5rem 0;
+    font-size: 1.2rem;
+}
+
+.tool-card p {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 0.9rem;
+    line-height: 1.4;
+}
+
+        @keyframes moon-glow {
+            0%, 100% { opacity: 0.1; }
+            50% { opacity: 0.15; }
+        }
+
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(10, 10, 26, 0.8);
+            backdrop-filter: blur(10px);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            transition: transform 0.3s ease;
+        }
+
+        .nav-link {
+            color: var(--text);
+            text-decoration: none;
+            font-size: 1.1rem;
+            transition: var(--transition);
+            position: relative;
+            padding: 0.5rem 0;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--accent);
+            transition: width 0.3s ease;
+        }
+
+        .nav-link:hover::after,
+        .nav-link.active::after {
+            width: 100%;
+        }
+
+        .menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--text);
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.5rem;
+        }
+
+        .content-section {
+            padding: 5rem 2rem 2rem;
+            min-height: 100vh;
+            position: relative;
+            z-index: 1;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+
+        .content-section.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .search-bar {
+            margin: 2rem 0;
+            max-width: 600px;
+            width: 100%;
+        }
+
+        #gameSearch {
+            width: 100%;
+            padding: 1rem;
+            border-radius: var(--radius);
+            border: none;
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text);
+            font-size: 1.1rem;
+            transition: var(--transition);
+        }
+
+        #gameSearch:focus {
+            outline: 2px solid var(--accent);
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .games {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .game-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: var(--radius);
+            overflow: hidden;
+            transition: var(--transition);
+            text-decoration: none;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .game-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .game-card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .game-card p {
+            padding: 1rem;
+            color: var(--text);
+            text-align: center;
+            font-weight: 500;
+        }
+
+        .loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--primary);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease;
+        }
+
+        .loader.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid var(--accent);
+            border-top-color: transparent;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        .light-mode {
+    --primary: #f0f0f5;
+    --secondary: rgba(0, 0, 0, 0.05);
+    --text: #0a0a1a;
+}
+
+.light-mode .game-card,
+.light-mode .setting-card {
+    background: rgba(0, 0, 0, 0.03);
+}
+
+.light-mode .tool-card {
+    background: rgba(0, 0, 0, 0.03);
+}
+
+.light-mode .moon {
+    background: radial-gradient(circle at 30% 30%, #fff 0%, #e0e0e0 100%);
+}
+
+
+        /* Add under media query section */
+.settings-grid {
+    display: grid;
+    gap: 1.5rem;
+    max-width: 800px;
+    margin: 2rem auto;
+}
+
+.setting-card {
+    background: var(--secondary);
+    padding: 1.5rem;
+    border-radius: var(--radius);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.setting-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 48px;
+    height: 24px;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.1);
+    transition: var(--transition);
+    border-radius: 34px;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 18px;
+    width: 18px;
+    left: 3px;
+    bottom: 3px;
+    background: var(--text);
+    transition: var(--transition);
+    border-radius: 50%;
+}
+
+input:checked + .slider {
+    background: var(--accent);
+}
+
+input:checked + .slider:before {
+    transform: translateX(24px);
+}
+
+.color-picker {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+
+.color-option {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: var(--transition);
+}
+
+.social-links {
+    display: flex;
+    gap: 1.5rem;
+    align-items: center;
+}
+
+.social-link {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    text-decoration: none;
+    transition: var(--transition);
+}
+
+.social-link i {
+    font-size: 2rem;
+}
+
+.social-link span {
+    color: var(--text);
+    font-size: 1.1rem;
+}
+
+.social-link:hover {
+    transform: translateY(-2px);
+}
+
+.color-option.active {
+    border-color: var(--text);
+}
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                position: fixed;
+                top: 70px;
+                right: -100%;
+                flex-direction: column;
+                background: rgba(10, 10, 26, 0.95);
+                padding: 2rem;
+                width: 100%;
+                text-align: center;
+                transition: right 0.3s ease;
+            }
+
+            .nav-links.active {
+                right: 0;
+            }
+
+            .menu-toggle {
+                display: block;
+            }
+
+            .content-section {
+                padding: 5rem 1rem 1rem;
+            }
+
+            .games {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="loader"><div class="spinner"></div></div>
+    <div id="particles-js"></div>
+    <div class="moon"></div>
+
+    <nav class="navbar">
+        <h1>c0h0s Games</h1>
+        <button class="menu-toggle">
+            <i class="fas fa-bars"></i>
+        </button>
+        <div class="nav-links">
+            <a href="#games" class="nav-link active">Games</a>
+            <a href="#tools" class="nav-link">Tools</a>
+            <a href="#settings" class="nav-link">Settings</a>
+        </div>
+    </nav> <!-- Add this closing tag -->
+    <main>
+        <section id="games" class="content-section">
+            <h2>All Games</h2>
+            <div class="search-bar">
+                <input type="text" id="gameSearch" placeholder="Search games...">
+            </div>
+            <div class="games">
+                <!-- Added all games from user's request -->
+                <a href="https://play.famobi.com/moto-x3m-pool-party" target="_blank" class="game-card">
+                    <img src="https://img.cdn.famobi.com/portal/html5games/images/tmp/120/MotoX3mPoolPartyTeaser.jpg" alt="Moto X3M Pool Party">
+                    <p>Moto X3M Pool Party</p>
+                </a>
+                <a href="https://play.famobi.com/solitaire-klondike" target="_blank" class="game-card">
+                    <img src="https://img.cdn.famobi.com/portal/html5games/images/tmp/120/SolitaireKlondikeTeaser.jpg" alt="Solitaire Klondike">
+                    <p>Solitaire Klondike</p>
+                </a>
+                <a href="https://play.famobi.com/defly" target="_blank" class="game-card">
+                    <img src="https://img.cdn.famobi.com/portal/html5games/images/tmp/120/DeflyTeaser.jpg" alt="Defly">
+                    <p>Defly</p>
+                </a>
+                <a href="https://play.famobi.com/peet-a-lock" target="_blank" class="game-card">
+                    <img src="https://img.cdn.famobi.com/portal/html5games/images/tmp/120/PeetALockTeaser.jpg" alt="Peet A Lock">
+                    <p>Peet A Lock</p>
+                </a>
+                <a href="https://play.famobi.com/slam-dunk-basketball" target="_blank" class="game-card">
+                    <img src="https://img.cdn.famobi.com/portal/html5games/images/tmp/SlamDunkBasketballTeaserB.jpg" alt="Slam Dunk Basketball">
+                    <p>Slam Dunk Basketball</p>
+                </a>
+                <a href="https://play.famobi.com/gold-mine" target="_blank" class="game-card">
+                    <img src="https://img.cdn.famobi.com/portal/html5games/images/tmp/120/GoldMineTeaser.jpg" alt="Gold Mine">
+                    <p>Gold Mine</p>
+                </a>
+                <a href="https://play.famobi.com/fast-circles" target="_blank" class="game-card">
+                    <img src="https://img.cdn.famobi.com/portal/html5games/images/tmp/120/FastCirclesTeaser.jpg" alt="Fast Circles">
+                    <p>Fast Circles</p>
+                </a>
+                <a href="https://play.famobi.com/minimal-dots" target="_blank" class="game-card">
+                    <img src="https://img.cdn.famobi.com/portal/html5games/images/tmp/120/MinimalDotsTeaser.jpg" alt="Minimal Dots">
+                    <p>Minimal Dots</p>
+                </a>
+                <a href="https://play.famobi.com/domino-shades" target="_blank" class="game-card">
+                    <img src="https://img.cdn.famobi.com/portal/html5games/images/tmp/120/DominoShadesTeaser.jpg" alt="Domino Shades">
+                    <p>Domino Shades</p>
+                </a>
+                <a href="https://play.famobi.com/pengu-slide" target="_blank" class="game-card">
+                    <img src="https://img.cdn.famobi.com/portal/html5games/images/tmp/120/PenguSlideTeaser.jpg" alt="Pengu Slide">
+                    <p>Pengu Slide</p>
+                </a>
+                <a href="https://play.famobi.com/cheap-golf" target="_blank" class="game-card">
+                    <img src="https://img.cdn.famobi.com/portal/html5games/images/tmp/120/CheapGolfTeaser.jpg" alt="Cheap Golf">
+                    <p>Cheap Golf</p>
+                </a>
+                <a href="https://play.famobi.com/timber-man" target="_blank" class="game-card">
+                    <img src="https://img.cdn.famobi.com/portal/html5games/images/tmp/120/TimberManTeaser.jpg" alt="Timber Man">
+                    <p>Timber Man</p>
+                </a>
+                <a href="https://play.famobi.com/katana-fruits" target="_blank" class="game-card">
+                    <img src="https://img.cdn.famobi.com/portal/html5games/images/tmp/120/KatanaFruitsTeaser.jpg" alt="Katana Fruits">
+                    <p>Katana Fruits</p>
+                </a>
+            </div>
+        </section>
+
+        <!-- Add this new section after the Games section -->
+        <section id="tools" class="content-section">
+            <h2>Essential Tools</h2>
+            <div class="tools-grid">
+                <!-- Remove.bg -->
+                <a href="https://www.remove.bg" target="_blank" class="tool-card">
+                    <div class="tool-logo">
+                        <i class="fas fa-layer-group"></i>
+                    </div>
+                    <h3>Remove.bg</h3>
+                    <p>Instant background removal for images</p>
+                </a>
+        
+                <!-- TinyPNG -->
+                <a href="https://tinypng.com" target="_blank" class="tool-card">
+                    <div class="tool-logo">
+                        <i class="fas fa-file-image"></i>
+                    </div>
+                    <h3>TinyPNG</h3>
+                    <p>Smart PNG/JPEG compression</p>
+                </a>
+        
+                <!-- Zapier -->
+                <a href="https://zapier.com" target="_blank" class="tool-card">
+                    <div class="tool-logo">
+                        <i class="fas fa-random"></i>
+                    </div>
+                    <h3>Zapier</h3>
+                    <p>Automate workflows between apps</p>
+                </a>
+        
+                <!-- Hugging Face -->
+                <a href="https://huggingface.co" target="_blank" class="tool-card">
+                    <div class="tool-logo">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <h3>Hugging Face</h3>
+                    <p>Open-source AI models & datasets</p>
+                </a>
+        
+                <!-- Descript -->
+                <a href="https://descript.com" target="_blank" class="tool-card">
+                    <div class="tool-logo">
+                        <i class="fas fa-file-audio"></i>
+                    </div>
+                    <h3>Descript</h3>
+                    <p>Edit audio/video via text transcripts</p>
+                </a>
+        
+                <!-- Coolors -->
+                <a href="https://coolors.co" target="_blank" class="tool-card">
+                    <div class="tool-logo">
+                        <i class="fas fa-palette"></i>
+                    </div>
+                    <h3>Coolors</h3>
+                    <p>Generate color palettes instantly</p>
+                </a>
+        
+                <!-- OmmWriter -->
+                <a href="https://ommwriter.com" target="_blank" class="tool-card">
+                    <div class="tool-logo">
+                        <i class="fas fa-keyboard"></i>
+                    </div>
+                    <h3>OmmWriter</h3>
+                    <p>Distraction-free writing environment</p>
+                </a>
+        
+                <!-- Plausible Analytics -->
+                <a href="https://plausible.io" target="_blank" class="tool-card">
+                    <div class="tool-logo">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h3>Plausible Analytics</h3>
+                    <p>Privacy-focused website analytics</p>
+                </a>
+        
+                <!-- Email on Acid -->
+                <a href="https://emailonacid.com" target="_blank" class="tool-card">
+                    <div class="tool-logo">
+                        <i class="fas fa-envelope"></i>
+                    </div>
+                    <h3>Email on Acid</h3>
+                    <p>Test email templates across clients</p>
+                </a>
+        
+                <!-- Placeit -->
+                <a href="https://placeit.net" target="_blank" class="tool-card">
+                    <div class="tool-logo">
+                        <i class="fas fa-tshirt"></i>
+                    </div>
+                    <h3>Placeit</h3>
+                    <p>Generate product mockups instantly</p>
+                </a>
+        
+                <!-- Markup Hero -->
+                <a href="https://markuphero.com" target="_blank" class="tool-card">
+                    <div class="tool-logo">
+                        <i class="fas fa-highlighter"></i>
+                    </div>
+                    <h3>Markup Hero</h3>
+                    <p>Annotate and share screenshots</p>
+                </a>
+        
+                <!-- TextFX -->
+                <a href="https://textfx.withgoogle.com" target="_blank" class="tool-card">
+                    <div class="tool-logo">
+                        <i class="fas fa-feather"></i>
+                    </div>
+                    <h3>TextFX</h3>
+                    <p>AI-powered creative writing tool</p>
+                </a>
+        
+                <!-- WhatFontIs -->
+                <a href="https://www.whatfontis.com" target="_blank" class="tool-card">
+                    <div class="tool-logo">
+                        <i class="fas fa-font"></i>
+                    </div>
+                    <h3>WhatFontIs</h3>
+                    <p>Identify fonts from images</p>
+                </a>
+        
+                <!-- ZenPen -->
+                <a href="https://zenpen.io" target="_blank" class="tool-card">
+                    <div class="tool-logo">
+                        <i class="fas fa-pen"></i>
+                    </div>
+                    <h3>ZenPen</h3>
+                    <p>Minimalist writing tool</p>
+                </a>
+        
+                <!-- ChatGPT -->
+                <a href="https://chat.openai.com" target="_blank" class="tool-card">
+                    <div class="tool-logo">
+                        <i class="fas fa-comment-dots"></i>
+                    </div>
+                    <h3>ChatGPT</h3>
+                    <p>AI text generation and assistance</p>
+                </a>
+
+                <!-- ChatGPT -->
+                <a href="https://chat.deepseek.com/" target="_blank" class="tool-card">
+                    <div class="tool-logo">
+                        <i class="fas fa-comment-dots"></i>
+                    </div>
+                    <h3>DeepSeek</h3>
+                    <p>Better than ChatGPT.</p>
+                </a>
+        
+                <!-- MidJourney/DALL-E -->
+                <a href="https://midjourney.com" target="_blank" class="tool-card">
+                    <div class="tool-logo">
+                        <i class="fas fa-image"></i>
+                    </div>
+                    <h3>MidJourney/DALL-E</h3>
+                    <p>Generate images from text prompts</p>
+                </a>
+            </div>
+        </section>
+
+        <section id="settings" class="content-section">
+            <h2>Settings</h2>
+            <div class="settings-grid">
+                <div class="setting-card">
+                    <h3>Appearance</h3>
+                    <div class="setting-item">
+                        <label>Dark Theme</label>
+                        <label class="switch">
+                            <input type="checkbox" id="themeToggle">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="setting-item">
+                        <label>Particle Effects</label>
+                        <label class="switch">
+                            <input type="checkbox" id="particleToggle" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
+        
+                <div class="setting-card">
+                    <h3>Social</h3>
+                    <div class="setting-item">
+                        <div class="social-links">
+                            <a href="https://www.youtube.com/@c0h0s117" target="_blank" class="social-link">
+                                <i class="fab fa-youtube" style="color: #ff0000;"></i>
+                            </a>
+                            <a href="#" class="social-link">
+                                <i class="fab fa-discord" style="color: #5865F2;"></i>
+                                <span>Discord: c0h0s</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+        </section>
+
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const loader = document.querySelector('.loader');
+            window.addEventListener('load', () => {
+                setTimeout(() => loader.classList.add('hidden'), 1000);
+            });
+
+            // Particles
+            particlesJS('particles-js', {
+                particles: {
+                    number: { value: 80 },
+                    color: { value: '#6c5ce7' },
+                    shape: { type: 'circle' },
+                    opacity: { value: 0.5 },
+                    size: { value: 3 },
+                    move: { enable: true, speed: 0.5 }
+                },
+                interactivity: {
+                    events: {
+                        onhover: { enable: true, mode: 'repulse' },
+                        onclick: { enable: true, mode: 'push' }
+                    }
+                }
+            });
+
+            // Mobile menu
+            const menuToggle = document.querySelector('.menu-toggle');
+            const navLinks = document.querySelector('.nav-links');
+            menuToggle.addEventListener('click', () => {
+                navLinks.classList.toggle('active');
+            });
+
+            // Game search
+            const gameSearch = document.getElementById('gameSearch');
+            gameSearch.addEventListener('input', (e) => {
+                const searchTerm = e.target.value.toLowerCase();
+                document.querySelectorAll('.game-card').forEach(card => {
+                    const title = card.querySelector('p').textContent.toLowerCase();
+                    card.style.display = title.includes(searchTerm) ? 'block' : 'none';
+                });
+            });
+
+            // Section observer
+            // Change the observer threshold to 0.01 for better detection
+const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            entry.target.classList.add('active');
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.toggle('active', link.hash === `#${entry.target.id}`);
+            });
+        }
+    });
+}, { threshold: 0.01 }); // Changed from 0.1 to 0.01
+
+            document.querySelectorAll('.content-section').forEach(section => {
+                observer.observe(section);
+            });
+
+            // Dark mode toggle
+                  // Replace the existing dark mode toggle function with:
+const themeToggle = document.getElementById('themeToggle');
+const particleToggle = document.getElementById('particleToggle');
+
+// Theme management
+function updateTheme(isDark) {
+    if (isDark) {
+        document.body.classList.remove('light-mode');
+        document.body.classList.add('dark-mode');
+    } else {
+        document.body.classList.add('light-mode');
+        document.body.classList.remove('dark-mode');
+    }
+}
+
+themeToggle.addEventListener('change', (e) => {
+    updateTheme(!e.target.checked);
+    localStorage.setItem('theme', e.target.checked ? 'light' : 'dark');
+});
+
+// Particle management
+particleToggle.addEventListener('change', (e) => {
+    const particles = document.getElementById('particles-js');
+    particles.style.display = e.target.checked ? 'block' : 'none';
+    localStorage.setItem('particles', e.target.checked ? 'on' : 'off');
+});
+
+// Load saved settings
+const savedTheme = localStorage.getItem('theme') || 'dark';
+const savedParticles = localStorage.getItem('particles') || 'on';
+
+themeToggle.checked = savedTheme === 'light';
+updateTheme(savedTheme === 'dark');
+particleToggle.checked = savedParticles === 'on';
+document.getElementById('particles-js').style.display = savedParticles === 'on' ? 'block' : 'none';
+
+            // Load saved theme
+            if (localStorage.getItem('theme') === 'light') {
+                document.body.classList.add('light-mode');
+            }
+        });
+
+        // Moon animation
+        let rotation = 0;
+        setInterval(() => {
+            rotation += 0.1;
+            document.querySelector('.moon').style.transform = `rotate(${rotation}deg)`;
+        }, 50);
+    </script>
+</body>
+</html>
